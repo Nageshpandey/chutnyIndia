@@ -3,6 +3,9 @@ from .models import *
 from .serializers import *
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from .serializers import OnLocationSerializer
+from .models import OnLocation
+from django.shortcuts import render, redirect, get_object_or_404
 
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
@@ -27,3 +30,8 @@ class MenuViewSet(viewsets.ModelViewSet):
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
+
+class OnLocationViewSet(viewsets.ModelViewSet):
+    queryset = OnLocation.objects.all()
+    serializer_class = OnLocationSerializer
+

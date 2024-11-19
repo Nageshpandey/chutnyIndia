@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -14,6 +15,20 @@ class Location(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.city)
+        super().save(*args, **kwargs)
+
+class OnLocation(models.Model):
+    onlocation = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=200, unique=True)
+    content = models.TextField(null=True, blank=True)
+
+
+    def __str__(self):
+        return self.onlocation
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.onlocation)
         super().save(*args, **kwargs)
 
 
@@ -35,6 +50,14 @@ class Category(models.Model):
 class Image(models.Model):
     location =models.ForeignKey(Location, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
+
+class OnLocationImage(models.Model):
+    onlocation =models.ForeignKey(OnLocation, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    onlocation = models.ForeignKey(OnLocation, on_delete=models.CASCADE, default=1)
+
+    def __str__(self):
+        return f"Image {self.id} for {self.onlocation}"
 
 class Menu(models.Model):
     sub_menu = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="sub_menu")
@@ -73,4 +96,13 @@ class ContactUs(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Event(models.Model):
+    onlocation = models.ForeignKey(OnLocation, on_delete=models.CASCADE, related_name='events')
+    event_name = models.CharField(max_length=100)
+    event_date = models.DateField()
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.event_name
     

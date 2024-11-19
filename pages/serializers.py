@@ -20,18 +20,12 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = '__all__'
 
-class ImageSerializer(serializers.ModelSerializer):  # Assuming you have an Image model
-    image_url = serializers.SerializerMethodField()  # Full URL for the image
+class ImageSerializer(serializers.ModelSerializer):
+    image_url = serializers.ImageField(source='image')  # Assuming 'image' is the field name in your Image model
 
     class Meta:
-        model = Image  # Your Image model
-        fields = ['id', 'image_url']  # Include other fields as needed
-
-    def get_image_url(self, obj):
-        request = self.context.get('request')
-        if request and obj.image:  # Ensure image field exists
-            return request.build_absolute_uri(obj.image.url)
-        return None
+        model = Image
+        fields = ['id', 'image_url']  # Include the id and image_url
 
 class LocationSerializer(serializers.ModelSerializer):
     categories = serializers.SerializerMethodField()
@@ -85,5 +79,20 @@ class CategoryRetriveSerializer(serializers.ModelSerializer):
             menu = Menu.objects.filter(sub_menu=obj)
             return  MenuSerializer(menu, many=True).data
         return []
+
+class OnLocationImageSerializer(serializers.ModelSerializer):
+    image_url = serializers.ImageField(source='image')  # Assuming 'image' is the field name
+    onlocation = serializers.PrimaryKeyRelatedField(queryset=OnLocation.objects.all(), default=1)  # Use PrimaryKeyRelatedField
+
+    class Meta:
+        model = OnLocationImage
+        fields = ['id', 'image_url', 'onlocation']  # Include the id, image_url, and onlocation
+
+class OnLocationSerializer(serializers.ModelSerializer):
+    slider_images = OnLocationImageSerializer(many=True, read_only=True)  # Use the OnLocationImageSerializer
+
+    class Meta:
+        model = OnLocation
+        fields = '__all__'  # or specify the fields you want to include
 
 

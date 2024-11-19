@@ -7,6 +7,7 @@ router.register('location', LocationViewSet)
 router.register('category', CategoryViewSet)
 router.register('menu', MenuViewSet)
 router.register('address', AddressViewSet)
+router.register('onlocation', OnLocationViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
