@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.utils import timezone
 
 # Create your models here.
 
@@ -21,15 +22,25 @@ class OnLocation(models.Model):
     onlocation = models.CharField(max_length=50)
     slug = models.SlugField(max_length=200, unique=True)
     content = models.TextField(null=True, blank=True)
-
+    name = models.CharField(max_length=50, null=True, blank=True)
+    number = models.CharField(max_length=50, null=True, blank=True)
+    event_location = models.CharField(max_length=50, null=True, blank=True)
+    attandence = models.IntegerField(null=True, blank=True)
+    date = models.DateField(default=timezone.now)
+    message = models.TextField(null=True, blank=True)
+    contact_number = models.CharField(max_length=15, default='')
+    email_address = models.EmailField(max_length=254, null=True, blank=True)
 
     def __str__(self):
         return self.onlocation
-    
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.onlocation)
         super().save(*args, **kwargs)
+
+    def get_slider_images(self):
+        return OnLocationImage.objects.filter(onlocation=self)
 
 
 class Category(models.Model):

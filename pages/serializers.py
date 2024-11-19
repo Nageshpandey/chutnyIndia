@@ -89,10 +89,10 @@ class OnLocationImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image_url', 'onlocation']  # Include the id, image_url, and onlocation
 
 class OnLocationSerializer(serializers.ModelSerializer):
-    slider_images = OnLocationImageSerializer(many=True, read_only=True)  # Use the OnLocationImageSerializer
+    slider_images = OnLocationImageSerializer(many=True, read_only=True, source='onlocationimage_set')
 
     class Meta:
         model = OnLocation
-        fields = '__all__'  # or specify the fields you want to include
+        fields = '__all__'
 
 
