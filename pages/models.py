@@ -90,6 +90,7 @@ class Address(models.Model):
     email = models.EmailField( max_length=254, null=True, blank=True)
     full_add = models.TextField( null=True, blank=True)
     mobile_number = models.CharField( max_length=50, null=True, blank=True)
+    slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
 
     def __str__(self):
         return self.email
