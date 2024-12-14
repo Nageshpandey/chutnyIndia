@@ -81,6 +81,9 @@ class Menu(models.Model):
     image = models.ImageField(upload_to='menu_images/', null=True, blank=True)
     menu_position = models.IntegerField(default=0, validators=[MinValueValidator(-999)])  # Allow negative values
 
+    class Meta:
+        ordering = ['menu_position']  # Order by menu_position by default
+
     def __str__(self):
         return self.name
 
@@ -88,6 +91,10 @@ class Menu(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    @classmethod
+    def get_ordered_menus(cls):
+        return cls.objects.all()  # This will return menus ordered by menu_position due to the Meta class
 
 
 class Address(models.Model):
