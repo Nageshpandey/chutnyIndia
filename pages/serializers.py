@@ -67,6 +67,16 @@ class MenuSerializer(serializers.ModelSerializer):
         model = Menu
         fields = '__all__'
 
+    def update(self, instance, validated_data):
+        # Update the instance with the new data
+        instance.menu_position = validated_data.get('menu_position', instance.menu_position)
+        instance.save()
+
+        # Update other menus' positions if needed (e.g., shifting positions)
+        Menu.objects.filter(menu_position=instance.menu_position).exclude(id=instance.id).update(menu_position=instance.menu_position + 1)
+
+        return instance
+
 
 class CategoryRetriveSerializer(serializers.ModelSerializer):
     menu_list = serializers.SerializerMethodField()

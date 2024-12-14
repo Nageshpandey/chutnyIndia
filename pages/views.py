@@ -23,7 +23,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class MenuViewSet(viewsets.ModelViewSet):
-    queryset = Menu.objects.all()
+    queryset = Menu.objects.all().order_by('menu_position')  # Order by menu_position
     serializer_class = MenuSerializer
 
 
