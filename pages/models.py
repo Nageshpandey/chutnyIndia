@@ -77,6 +77,7 @@ class Menu(models.Model):
     menu_details = models.TextField(null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
     image = models.ImageField(upload_to='menu_images/', null=True, blank=True)
+    menu_position = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
