@@ -71,19 +71,31 @@ class OnLocationImage(models.Model):
         return f"Image {self.id} for {self.onlocation}"
 
 class Menu(models.Model):
-    sub_menu = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="sub_menu")
+    sub_menu = models.ForeignKey('Category', on_delete=models.CASCADE, related_name="sub_menu")
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=200, unique=True)
     menu_details = models.TextField(null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
     image = models.ImageField(upload_to='menu_images/', null=True, blank=True)
-    menu_position = models.PositiveIntegerField(default=0)
+    menu_position = models.IntegerField(default=0)  # Allow negative values
 
     def __str__(self):
         return self.name
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
+
+        # Adjust menu positions dynamically
+        menus = Menu.objects.filter(sub_menu=self.sub_menu).exclude(pk=self.pk)
+
+        if self.menu_position is not None:
+            # Shift other menus' positions to accommodate the new one
+            for menu in menus:
+                if menu.menu_position >= self.menu_position:
+                    menu.menu_position += 1
+                    menu.save()
+
         super().save(*args, **kwargs)
 
 
